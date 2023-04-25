@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: payment-me
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+  datasource:
+    url: jdbc:postgresql://localhost:5434/ecommerce
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        show_sql: true
+  output:
+    ansi:
+      enabled: always
+
+ecommerce:
+  broker:
+    exchange:
+      orderEvent: ecommerce-order
+    queue:
+      orderRequest: order-payment-request
+    key:
+      bindOrderRequest: order-payment-request
+
+
