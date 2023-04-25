@@ -17,9 +17,9 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void save(PaymentDto paymentDto) {
+    public Payment save(PaymentDto paymentDto) {
         var payment = new Payment();
         BeanUtils.copyProperties(paymentDto, payment);
-        paymentRepository.save(payment);
+        return paymentRepository.save(payment);
     }
 }

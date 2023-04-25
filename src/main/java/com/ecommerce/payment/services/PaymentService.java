@@ -1,7 +1,8 @@
 package com.ecommerce.payment.services;
 
 import com.ecommerce.payment.dtos.PaymentDto;
+import com.ecommerce.payment.models.Payment;
 
 public interface PaymentService {
-    void save(PaymentDto paymentDto);
+    Payment save(PaymentDto paymentDto);
 }

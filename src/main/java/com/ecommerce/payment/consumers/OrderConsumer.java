@@ -1,27 +1,27 @@
 package com.ecommerce.payment.consumers;
 
 import com.ecommerce.payment.dtos.OrderDto;
+import com.ecommerce.payment.enums.PaymentStatus;
 import com.ecommerce.payment.models.Payment;
+import com.ecommerce.payment.publishers.OrderPublisher;
 import com.ecommerce.payment.services.PaymentService;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.BeanUtils;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrderConsumer {
 
-    private final RabbitTemplate rabbitTemplate;
     private final PaymentService paymentService;
+    private final OrderPublisher orderPublisher;
 
-    public OrderConsumer(RabbitTemplate rabbitTemplate, PaymentService paymentService) {
-        this.rabbitTemplate = rabbitTemplate;
+    public OrderConsumer(PaymentService paymentService, OrderPublisher orderPublisher) {
         this.paymentService = paymentService;
+        this.orderPublisher = orderPublisher;
     }
 
     @RabbitListener(bindings = @QueueBinding(
@@ -30,6 +30,9 @@ public class OrderConsumer {
             key = "${ecommerce.broker.key.bindOrderRequest}"
     ))
     public void listenOrderEvent(@Payload OrderDto orderDto) {
-        paymentService.save(orderDto.getPaymentDto());
+        Payment payment = paymentService.save(orderDto.getPaymentDto());
+        orderDto.getPaymentDto().setPaymentId(payment.getPaymentId());
+        orderDto.setPaymentStatus(PaymentStatus.APPROVED);
+        orderPublisher.publish(orderDto);
     }
 }

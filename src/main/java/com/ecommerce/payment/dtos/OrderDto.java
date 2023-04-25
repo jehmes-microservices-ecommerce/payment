@@ -1,5 +1,7 @@
 package com.ecommerce.payment.dtos;
 
+import com.ecommerce.payment.enums.PaymentStatus;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public class OrderDto {
     private List<OrderItemsDto> orderItems;
     private BigDecimal amount;
     private PaymentDto paymentDto;
+    private PaymentStatus paymentStatus;
 
     public OrderDto() {
     }
@@ -43,5 +46,13 @@ public class OrderDto {
 
     public void setPaymentDto(PaymentDto paymentDto) {
         this.paymentDto = paymentDto;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 }

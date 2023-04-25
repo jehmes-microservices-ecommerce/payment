@@ -1,3 +1,6 @@
+server:
+  port: 8088
+
 spring:
   application:
     name: payment-me
@@ -7,7 +10,7 @@ spring:
     username: admin
     password: admin
   datasource:
-    url: jdbc:postgresql://localhost:5434/ecommerce
+    url: jdbc:postgresql://localhost:5434/payment
     username: admin
     password: admin
   jpa:
