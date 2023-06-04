@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: payment-me
+    name: payment
   rabbitmq:
     host: localhost
     port: 5672
@@ -28,8 +28,10 @@ ecommerce:
   broker:
     exchange:
       orderEvent: ecommerce-order
+      userEvent: ecommerce-userevent
     queue:
       orderRequest: order-payment-request
+      userEvent: payment-user-event
     key:
       bindOrderRequest: order-payment-request
 
