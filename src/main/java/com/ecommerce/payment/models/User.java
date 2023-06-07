@@ -1,12 +1,12 @@
 package com.ecommerce.payment.models;
 
-import com.ecommerce.payment.dtos.UserEventDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -23,4 +23,7 @@ public class User {
     private String email;
     @Column(nullable = false, length = 11)
     private String cpf;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "user")
+    private Set<Payment> payments;
 }

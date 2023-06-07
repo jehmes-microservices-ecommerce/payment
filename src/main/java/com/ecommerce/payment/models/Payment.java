@@ -1,14 +1,18 @@
 package com.ecommerce.payment.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
 @Table(name = "TB_PAYMENT")
+@Data
 public class Payment {
 
     @Id
@@ -18,34 +22,21 @@ public class Payment {
     private String cardNumber;
     @Column
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
-    private LocalDateTime localDateTime;
+    private LocalDateTime requestDate;
+    @Column
+    private String lastDigitsCreditCard;
+    @Column
+    private String valuePaid;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     public Payment() {
     }
 
     public Payment(String cardNumber, LocalDateTime localDateTime) {
         this.cardNumber = cardNumber;
-        this.localDateTime = localDateTime;
+        this.requestDate = localDateTime;
     }
 
-    public UUID getPaymentId() {
-        return paymentId;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
-    }
-
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
-    }
 }
