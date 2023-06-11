@@ -15,8 +15,8 @@ public class RabbitmqConfig {
 
     private final CachingConnectionFactory cachingConnectionFactory;
 
-    @Value(value = "${ecommerce.broker.exchange.orderEvent}")
-    private String orderExchange;
+    @Value(value = "${ecommerce.broker.exchange.orderPaymentCommand}")
+    private String orderPaymentExchange;
 
     public RabbitmqConfig(CachingConnectionFactory cachingConnectionFactory) {
         this.cachingConnectionFactory = cachingConnectionFactory;
@@ -38,6 +38,6 @@ public class RabbitmqConfig {
 
     @Bean
     public TopicExchange topicExchange() {
-        return new TopicExchange(orderExchange);
+        return new TopicExchange(orderPaymentExchange);
     }
 }

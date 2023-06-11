@@ -1,11 +1,13 @@
 package com.ecommerce.payment.models;
 
+import com.ecommerce.payment.dtos.OrderDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.BeanUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,14 +21,13 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID paymentId;
     @Column(nullable = false)
-    private String cardNumber;
+    private String cardNumbers;
     @Column
-    @CreationTimestamp
-    private LocalDateTime requestDate;
+    private LocalDateTime requestDateTime;
     @Column
     private String lastDigitsCreditCard;
     @Column
-    private String valuePaid;
+    private BigDecimal valuePaid;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -35,8 +36,15 @@ public class Payment {
     }
 
     public Payment(String cardNumber, LocalDateTime localDateTime) {
-        this.cardNumber = cardNumber;
-        this.requestDate = localDateTime;
+        this.cardNumbers = cardNumber;
+        this.requestDateTime = localDateTime;
     }
 
+    public static Payment convertToModel(OrderDto orderDto) {
+        Payment payment = new Payment();
+        BeanUtils.copyProperties(orderDto.getPaymentDto(), payment);
+        payment.setLastDigitsCreditCard(orderDto.getPaymentDto().getCardNumbers().substring(orderDto.getPaymentDto().getCardNumbers().length() - 4));
+        payment.setUser(orderDto.getUser().convertToUser());
+        return payment;
+    }
 }

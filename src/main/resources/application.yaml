@@ -27,12 +27,13 @@ spring:
 ecommerce:
   broker:
     exchange:
-      orderEvent: ecommerce-order
+      orderPaymentCommand: order-payment
       userEvent: ecommerce-userevent
     queue:
-      orderRequest: order-payment-request
+      orderPaymentRequest: order-payment-request
       userEvent: payment-user-event
     key:
-      bindOrderRequest: order-payment-request
+      bindOrderRequestCommand: order-payment-request
+      bindOrderReplyCommand: order-payment-reply
 
 

@@ -10,15 +10,16 @@ import org.springframework.stereotype.Service;
 public class OrderPublisher {
 
     private final RabbitTemplate rabbitTemplate;
-    @Value(value = "${ecommerce.broker.exchange.orderEvent}")
-    private String orderExchange;
+    @Value(value = "${ecommerce.broker.exchange.orderPaymentCommand}")
+    private String orderPaymentExchange;
+    @Value(value = "${ecommerce.broker.key.bindOrderReplyCommand}")
+    private String bindOrderPayment;
 
     public OrderPublisher(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
     public void publish(OrderDto orderDto) {
-        orderDto.setPaymentStatus(PaymentStatus.APPROVED);
-        rabbitTemplate.convertAndSend(orderExchange, "order-payment-reply", orderDto);
+        rabbitTemplate.convertAndSend(orderPaymentExchange, bindOrderPayment, orderDto);
     }
 }

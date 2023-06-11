@@ -7,6 +7,9 @@ import com.ecommerce.payment.services.PaymentService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
@@ -17,9 +20,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment save(PaymentDto paymentDto) {
-        var payment = new Payment();
-        BeanUtils.copyProperties(paymentDto, payment);
+    public Payment save(Payment payment) {
         return paymentRepository.save(payment);
     }
 }

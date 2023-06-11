@@ -1,6 +1,7 @@
 package com.ecommerce.payment.consumers;
 
 import com.ecommerce.payment.dtos.OrderDto;
+import com.ecommerce.payment.dtos.PaymentDto;
 import com.ecommerce.payment.enums.PaymentStatus;
 import com.ecommerce.payment.models.Payment;
 import com.ecommerce.payment.publishers.OrderPublisher;
@@ -11,26 +12,31 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public class OrderConsumer {
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+@Component
+public class OrderPaymentRequest {
 
     private final PaymentService paymentService;
     private final OrderPublisher orderPublisher;
 
-    public OrderConsumer(PaymentService paymentService, OrderPublisher orderPublisher) {
+    public OrderPaymentRequest(PaymentService paymentService, OrderPublisher orderPublisher) {
         this.paymentService = paymentService;
         this.orderPublisher = orderPublisher;
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "${ecommerce.broker.queue.orderRequest}", durable = "true"),
-            exchange = @Exchange(value = "${ecommerce.broker.exchange.orderEvent}", type = ExchangeTypes.TOPIC, ignoreDeclarationExceptions = "true"),
-            key = "${ecommerce.broker.key.bindOrderRequest}"
+            value = @Queue(value = "${ecommerce.broker.queue.orderPaymentRequest}", durable = "true"),
+            exchange = @Exchange(value = "${ecommerce.broker.exchange.orderPaymentCommand}", type = ExchangeTypes.TOPIC, ignoreDeclarationExceptions = "true"),
+            key = "${ecommerce.broker.key.bindOrderRequestCommand}"
     ))
-    public void listenOrderEvent(@Payload OrderDto orderDto) {
-        Payment payment = paymentService.save(orderDto.getPaymentDto());
+    public void listenOrderPaymentCommand(@Payload OrderDto orderDto) {
+        orderDto.getPaymentDto().setRequestDateTime((LocalDateTime.now(ZoneId.of("UTC"))));
+        Payment payment = Payment.convertToModel(orderDto);
+        payment = paymentService.save(payment);
         orderDto.getPaymentDto().setPaymentId(payment.getPaymentId());
         orderDto.setPaymentStatus(PaymentStatus.APPROVED);
         orderPublisher.publish(orderDto);

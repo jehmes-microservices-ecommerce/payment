@@ -1,5 +1,6 @@
 package com.ecommerce.payment.models;
 
+import com.ecommerce.payment.enums.UserType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,9 @@ public class User {
     private String email;
     @Column(nullable = false, length = 11)
     private String cpf;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "user")
     private Set<Payment> payments;

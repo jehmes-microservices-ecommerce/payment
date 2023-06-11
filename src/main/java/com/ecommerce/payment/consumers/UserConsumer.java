@@ -1,6 +1,6 @@
 package com.ecommerce.payment.consumers;
 
-import com.ecommerce.payment.dtos.UserEventDto;
+import com.ecommerce.payment.dtos.UserDto;
 import com.ecommerce.payment.services.UserService;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -22,7 +22,7 @@ public class UserConsumer {
             value = @Queue(value = "${ecommerce.broker.queue.userEvent}", durable = "true"),
             exchange = @Exchange(value = "${ecommerce.broker.exchange.userEvent}", type = ExchangeTypes.FANOUT, ignoreDeclarationExceptions = "true")
     ))
-    public void listenUserEvent(UserEventDto userEventDto) {
+    public void listenUserEvent(UserDto userEventDto) {
         userService.save(userEventDto.convertToUser());
     }
 }

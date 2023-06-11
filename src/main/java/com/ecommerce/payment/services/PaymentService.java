@@ -4,5 +4,5 @@ import com.ecommerce.payment.dtos.PaymentDto;
 import com.ecommerce.payment.models.Payment;
 
 public interface PaymentService {
-    Payment save(PaymentDto paymentDto);
+    Payment save(Payment payment);
 }
