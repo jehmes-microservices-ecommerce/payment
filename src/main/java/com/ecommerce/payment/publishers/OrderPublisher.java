@@ -1,7 +1,6 @@
 package com.ecommerce.payment.publishers;
 
 import com.ecommerce.payment.dtos.OrderDto;
-import com.ecommerce.payment.enums.PaymentStatus;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

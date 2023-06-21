@@ -13,6 +13,8 @@ public class OrderDto {
     private BigDecimal totalPrice;
     private boolean productsInStock;
     private PaymentStatus paymentStatus;
+    private String message;
+    private String orderStatus;
 
     public OrderDto() {
     }
@@ -67,6 +69,22 @@ public class OrderDto {
 
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {

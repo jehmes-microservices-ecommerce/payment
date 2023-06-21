@@ -1,7 +1,6 @@
 package com.ecommerce.payment.consumers;
 
 import com.ecommerce.payment.dtos.OrderDto;
-import com.ecommerce.payment.dtos.PaymentDto;
 import com.ecommerce.payment.enums.PaymentStatus;
 import com.ecommerce.payment.models.Payment;
 import com.ecommerce.payment.publishers.OrderPublisher;
@@ -21,11 +20,9 @@ import java.time.ZoneId;
 public class OrderPaymentRequest {
 
     private final PaymentService paymentService;
-    private final OrderPublisher orderPublisher;
 
-    public OrderPaymentRequest(PaymentService paymentService, OrderPublisher orderPublisher) {
+    public OrderPaymentRequest(PaymentService paymentService) {
         this.paymentService = paymentService;
-        this.orderPublisher = orderPublisher;
     }
 
     @RabbitListener(bindings = @QueueBinding(
@@ -35,10 +32,6 @@ public class OrderPaymentRequest {
     ))
     public void listenOrderPaymentCommand(@Payload OrderDto orderDto) {
         orderDto.getPaymentDto().setRequestDateTime((LocalDateTime.now(ZoneId.of("UTC"))));
-        Payment payment = Payment.convertToModel(orderDto);
-        payment = paymentService.save(payment);
-        orderDto.getPaymentDto().setPaymentId(payment.getPaymentId());
-        orderDto.setPaymentStatus(PaymentStatus.APPROVED);
-        orderPublisher.publish(orderDto);
+        paymentService.saveAndPublish(orderDto);
     }
 }
